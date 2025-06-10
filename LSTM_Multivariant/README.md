@@ -24,7 +24,7 @@ EconoCast v2 is a deep learning model built using Keras that predicts future sto
 | Layers | 2 LSTM layers (64 → 32) + Dropout + Dense(1) |
 | Input Features | `Close`, `MA20`, `RSI`, etc. |
 | Output | Next-day `Close` price |
-| Sequence Length | 30 days |
+| Sequence Length | 60 days |
 | Epochs | 15 |
 | Loss | MSE |
 | Optimizer | Adam |
