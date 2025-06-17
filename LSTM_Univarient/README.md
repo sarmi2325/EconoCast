@@ -1,77 +1,48 @@
-# EconoCast v1 — Univariate LSTM for Tesla Stock Forecasting
+# EconoCast v1 — Univariate forecasting for Tesla Stock by Linear Regression
 
-EconoCast is a deep learning-based time series forecasting project focused on predicting the next-day **Tesla (TSLA)** stock closing price using an LSTM model.
 
-This version uses only the **historical closing price** (Univariate LSTM) to establish a strong foundational model, showcasing both technical understanding and model interpretability.
-
----
-
-## Problem Statement
-
-> Can we forecast the next day's Tesla stock closing price using only its past price history?
-
-Traditional models like ARIMA and moving averages rely on stationarity or limited memory. LSTM (Long Short-Term Memory) networks, on the other hand, **learn patterns from sequential data** by maintaining long-term dependencies, making them ideal for stock forecasting.
+Forecast the **next day’s closing price** of Tesla using past values and time-based features. This is a **univariate, single-step, supervised forecasting** task.
 
 ---
 
-## Data Source
+##  Pipeline Overview
 
-- Source: [Yahoo Finance](https://finance.yahoo.com/)
-- Ticker: `TSLA`
-- Duration: 2018–2024 (daily data)
-- Features used in this version: only `Close`
+1. **Data Preparation**
+   - Parse dates, set `Date` as index
+   - Sort chronologically
+   - Create lag features (1, 2, 3, 7 days)
+   - Create rolling window features (mean & std)
+   - Add time-based features: `day_of_week`, `month`, `is_weekend`
+
+2. **Train-Test Split**
+   - Time-based split (e.g., last 30 days as test)
+
+3. **Modeling**
+   - Linear Regression from `sklearn`
+   - Evaluation metrics: **RMSE** and **MAE**
+
+---
+
+##  Feature Engineering
+
+| Feature             | Description                                 |
+|---------------------|---------------------------------------------|
+| `lag_1`, `lag_7`    | Previous stock prices                       |
+| `rolling_mean_3`    | Moving average over 3 days                  |
+| `rolling_std_3`     | Rolling std deviation over 3 days           |
+| `dayofweek`, `month`| Time-based seasonality indicators           |
+| `is_weekend`        | Binary weekend flag                         |
 
 ---
 
-## Workflow Summary
-## Data Collection
+##  Model Evaluation (Baseline)
 
-Download historical stock data (Close price of TSLA) using yfinance.
-
-## Preprocessing
-
-Normalize the close prices using MinMaxScaler.
-
-Create sequences: Use past 60 days to predict the next day.
-
-## Train-Test Split
-
-Split the time series into 80% training and 20% testing (no shuffling!).
-
-## Model Building (Keras)
-
-Layers:
-
-LSTM(50 units)
-
-Dropout(0.2)
-
-Dense(1 output)
-
-Loss: MSE, Optimizer: Adam
-
-## Model Training
-
-Train for 10 epochs with batch size 32.
-
-## Evaluation
-
-Predict on test set.
-
-Inverse scale predictions.
-
-Calculate MAE & RMSE.
-
-## Visualization
-
-Plot training/validation loss.
-
-Plot actual vs predicted prices.
-
-## Results
-
-MAE: ~13.82
-
-RMSE: ~18.17
+- **Model**: Linear Regression
+- **RMSE**: 6.24
+- **MAE**: 4.41
 
 ---
+
+##  Feature Importance
+
+Feature importance is visualized using the absolute value of coefficients from the linear model.
